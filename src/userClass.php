@@ -8,9 +8,9 @@ class User {
     private $hashedPassword;
 
     public function __construct() {
-        $this->id             = -1;
-        $this->username       = '';
-        $this->email          = '';
+        $this->id = -1;
+        $this->username = '';
+        $this->email = '';
         $this->hashedPassword = '';
     }
 
@@ -34,7 +34,9 @@ class User {
         $this->email = $email;
     }
 
-    public function setHashedPassword($hashedPassword) {
+    public function setHashedPassword($pass) {
+        $options = ['cost' => 11];
+        $hashedPassword = password_hash($pass, PASSWORD_BCRYPT, $options);
         $this->hashedPassword = $hashedPassword;
     }
 

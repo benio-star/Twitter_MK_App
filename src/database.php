@@ -17,6 +17,7 @@ class Database {
             die("Nieudane połączenie - błąd: " . $this->connection->connect_error .
                     " numer: " . $this->connection->connect_errno);
         } else {
+            $this->connection->set_charset('utf8');
             echo 'Połączenie do bazy - OK!<br>';
         }
     }
@@ -33,10 +34,14 @@ class Database {
 
     public function useQuery($sql) {
         $result = $this->connection->query($sql);
+        $this->confirmQuery($result);
+        return $result;
+    }
+
+    private function confirmQuery($result) {
         if (!$result) {
             die('Zapytanie do bazy nie powiodło się');
         }
-        return $result;
     }
 
 }
