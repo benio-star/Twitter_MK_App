@@ -1,5 +1,4 @@
 <?php
-
 require_once (dirname(__FILE__) . '/src/userClass.php');
 //
 //$userAdd = new Users();
@@ -19,5 +18,4 @@ require_once (dirname(__FILE__) . '/src/userClass.php');
 //    echo 'Ilosc pobranych wynikow: ' . $numRows;
 //}
 
-Users::getAllRows($database);
 

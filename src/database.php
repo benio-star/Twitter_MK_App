@@ -1,10 +1,11 @@
 <?php
-
 require_once dirname(__FILE__) . '/dbConfig.php';
 
 class Database {
 
     public $connection;
+    public $stmt;
+    protected $insert_id;
 
     // make the connection to DB start automatically with new object initiate
     function __construct() {
@@ -45,20 +46,51 @@ class Database {
         }
     }
 
-    public function clearInput($param) {
-        $param = trim($param);
-        $param = stripcslashes($param);
-        $param = htmlspecialchars($param);
-        return $param;
+    public function realEscpeMysql($string) {
+        $escapedString = $this->connection->real_escape_string($string);
+        return $escapedString;
     }
 
-    public function getRowsAffested() {
+    public function getRowsAffected() {
         return $this->connection->affected_rows;
+    }
+
+    public function prepStatInit() {
+        $this->stmt = $this->connection->stmt_init();
+        return $this->stmt;
+    }
+
+    public function prepExecStatement($sql, $refs) {
+        $this->prepStatInit();
+        if (!$this->stmt->prepare($sql)) {
+            echo $error = $this->stmt->error;
+        } else {
+            call_user_func_array(array($this->stmt, 'bind_param'), $refs);
+            $this->stmt->execute();
+            if ($this->stmt->error) {
+                echo $error = $this->stmt->error;
+                echo '<br>';
+            }
+            $this->insert_id = $this->stmt->insert_id;
+            return TRUE;
+        }
+    }
+
+    public function bindOutputStatement($outBinds) {
+        call_user_func_array(array($this->stmt, 'bind_result'), $outBinds);
+        $this->stmt->store_result();
+        $numrows = $this->stmt->num_rows;
+        if (!$numrows) {
+            return FALSE;
+        } else {
+            return $this->stmt->fetch();
+        }
     }
 
 }
 
 $database = new Database();
 ////$database->createConnection();
+//$database->prepStatInit();
 //$database->closeConnection();
 
