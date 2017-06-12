@@ -40,47 +40,67 @@ class User extends Database {
 
     public function setUsername($username) {
         $this->username = $this->clearInput($username);
-        return $this->username;
     }
 
     public function setEmail($email) {
         $this->email = $this->clearInput($email);
-        return $this->email;
     }
 
     public function setHashedPassword($pass) {
         $options = ['cost' => 11];
         $hashedPassword = password_hash($this->clearInput($pass), PASSWORD_BCRYPT, $options);
         $this->hashedPassword = $hashedPassword;
-        return $hashedPassword;
     }
 
     public function saveToDb(Database $database) {
+        // Setting up variables
+        $this->setUsername($this->username);
+        $name = $this->getUsername();
+        $this->setEmail($this->email);
+        $email = $this->getEmail();
+        $hashedPass = $this->getHashedPassword();
+        //We can not use actual values or expresions so that is why we need
+        //to pass by references.
+        $params[] = 'sss';
+        $params[] = &$name;
+        $params[] = &$email;
+        $params[] = &$hashedPass;
+
         if ($this->id == -1) {
-            //We will save new user to DB
+            /*
+             * We will save new user to DB
+             * Prepare the $sql query
+             */
             $sql = "INSERT INTO users (username, email, hashed_password) ";
             $sql .= "VALUES (?, ?, ?)";
 
-            $name = $this->setUsername($this->username);
-            $email = $this->setEmail($this->email);
-            $hashedPass = $this->hashedPassword;
-            //We can not use actual values or expresions so that is why we need
-            //to pass by references.
-            $params[] = 'sss';
-            $params[] = &$name;
-            $params[] = &$email;
-            $params[] = &$hashedPass;
-
+            echo $sql;
+            /*
+             * prepExecStatement returned bool
+             */
             $info = $database->prepExecStatement($sql, $params);
             if ($info == TRUE) {
                 $this->id = $database->insert_id;
+                return TRUE;
+            }
+        } else {
+            $sql = "UPDATE users SET username=?, "
+                    . "email=?, "
+                    . "hashed_password=?";
+            $sql .= "WHERE id=?";
+
+            echo $sql;
+
+            $info = $database->prepExecStatement($sql, $params);
+            if ($info == TRUE) {
+                echo $database->getRowsAffected();
                 return TRUE;
             }
         }
         return FALSE;
     }
 
-    static function loadUserById(Database $database, $id) {
+    static public function loadUserById(Database $database, $id) {
         $sql = "SELECT * FROM users WHERE id=?";
         $params[] = 'i';
         $params[] = &$id;
@@ -106,17 +126,40 @@ class User extends Database {
         }
     }
 
+    static public function loadAllUsers(Database $database) {
+        $sql = "SELECT * FROM users";
+        $ret = [];
+
+        $result = $database->useQuery($sql);
+        if ($result == TRUE && $result->num_rows != 0) {
+            foreach ($result as $row) {
+                $loadedUser = new User();
+                $loadedUser->id = $row['id'];
+                $loadedUser->email = $row['email'];
+                $loadedUser->username = $row['username'];
+                $loadedUser->hashedPassword = $row['hashed_password'];
+
+                $ret[] = $loadedUser;
+            }
+        }
+
+        return $ret;
+    }
+
 }
 
-$username = "Marek10";
-$email = 'marecki10@marecki.pl';
-$pass = 'marek@1225';
+$username = "Marek_NEW_17";
+$email = 'marecki17@marecki.pl';
+$pass = 'marek@165';
+$id = 29;
 $user = new User($username, $email, $pass);
 $user->setUsername($username);
 $user->setEmail($email);
 $user->setHashedPassword($pass);
-//$user->saveToDb($database);
-$id = 30;
-$user->loadUserById($database, $id);
-//echo $user->getId() . '<br>';
+$user->saveToDb($database);
+//var_dump(User::loadUserById($database, $id));
+//$res = User::loadAllUsers($database);
+//echo '<pre>';
+//print_r($res);
+//echo '</pre>';
 $database->closeConnection();

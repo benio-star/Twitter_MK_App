@@ -52,7 +52,7 @@ class Database {
     }
 
     public function getRowsAffected() {
-        return $this->connection->affected_rows;
+        return $this->stmt->affected_rows;
     }
 
     public function prepStatInit() {
