@@ -5,8 +5,6 @@ require_once dirname(__FILE__) . '/dbConfig.php';
 class Database {
 
     public $connection;
-    public $stmt;
-    protected $insert_id;
 
     // make the connection to DB start automatically with new object initiate
     function __construct() {
@@ -47,34 +45,32 @@ class Database {
         }
     }
 
-    public function realEscpeMysql($string) {
-        $escapedString = $this->connection->real_escape_string($string);
-        return $escapedString;
-    }
-
     public function getRowsAffected() {
-        return $this->stmt->affected_rows;
+        return $this->connection->affected_rows;
     }
 
     public function prepStatInit() {
-        $this->stmt = $this->connection->stmt_init();
-        return $this->stmt;
+        return $this->connection->stmt_init();
     }
 
     public function prepExecStatement($sql, $refs) {
-        $this->prepStatInit();
-        if (!$this->stmt->prepare($sql)) {
-            echo $error = $this->stmt->error;
+        $stmt = $this->prepStatInit();
+        if (!$stmt->prepare($sql)) {
+            echo $error = $stmt->error;
         } else {
-            call_user_func_array(array($this->stmt, 'bind_param'), $refs);
-            $this->stmt->execute();
-            if ($this->stmt->error) {
-                echo $error = $this->stmt->error;
+            call_user_func_array(array($stmt, 'bind_param'), $refs);
+            $stmt->execute();
+            if ($stmt->error) {
+                echo $error = $stmt->error;
                 echo '<br>';
             }
-            $this->insert_id = $this->stmt->insert_id;
             return TRUE;
         }
+    }
+
+    public function lastId() {
+        $lastId = $this->connection->insert_id;
+        return $lastId;
     }
 
     public function bindOutputStatement($outBinds) {

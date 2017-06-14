@@ -76,13 +76,15 @@ class User extends Database {
             $params[] = &$name;
             $params[] = &$email;
             $params[] = &$hashedPass;
-
+            echo '<pre>';
+            print_r($params);
+            echo '</pre>';
             /*
              * prepExecStatement returned bool
              */
             $info = $database->prepExecStatement($sql, $params);
             if ($info == TRUE) {
-                $this->id = $database->insert_id;
+                $this->id = $database->lastId();
                 return TRUE;
             }
         } else {
@@ -167,26 +169,25 @@ class User extends Database {
 
 }
 
-$username = "Marek_NEW_17";
-$email = 'marecki17@marecki.pl';
-$pass = 'marek@165';
+$username = "Marek24";
+$email = 'marecki24@marecki.pl';
+$pass = 'marek@1634';
 $id = 48;
 $user = new User();
 $user->setUsername($username);
 $user->setEmail($email);
 $user->setHashedPassword($pass);
 //$user->saveToDb($database);
-$userById = User::loadUserById($database, $id);
-echo '<pre>';
-var_dump($userById);
-echo '</pre>';
-echo $userById->getId() . '<br>';
+//$userById = User::loadUserById($database, $id);
+//echo '<pre>';
+//var_dump($userById);
+//echo '</pre>';
+//echo $userById->getId() . '<br>';
 //$userById->setUsername('Marek8_new');
 //$userById->saveToDb($database);
 //$res = User::loadAllUsers($database);
-var_dump($userById->delete($database));
-echo $userById->getId() . '<br>';
-
+//var_dump($userById->delete($database));
+//echo $userById->getId() . '<br>';
 //echo '<pre>';
 //print_r($res);
 //echo '</pre>';
