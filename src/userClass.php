@@ -41,6 +41,7 @@ class User extends Database {
 
     public function setUsername($username) {
         $this->username = $this->clearInput($username);
+        return $this;
     }
 
     public function setEmail($email) {
@@ -90,7 +91,7 @@ class User extends Database {
         } else {
             $sql = "UPDATE users SET username = ?, email = ?, hashed_password = ? ";
             $sql .= "WHERE id = ?";
-
+            echo '<br>--- '.$id.' ---<br>';
             $params[] = 'sssi';
             $params[] = &$name;
             $params[] = &$email;
@@ -165,14 +166,15 @@ class User extends Database {
             }
             return FALSE;
         }
+        return TRUE;
     }
 
 }
 
-$username = "Marek24";
-$email = 'marecki24@marecki.pl';
-$pass = 'marek@1634';
-$id = 48;
+$username = "Marek29<html>";
+$email = 'marecki29@mareck<p>i.pl';
+$pass = 'marek@16349';
+$id = 49;
 $user = new User();
 $user->setUsername($username);
 $user->setEmail($email);
@@ -181,12 +183,13 @@ $user->setHashedPassword($pass);
 //$userById = User::loadUserById($database, $id);
 //echo '<pre>';
 //var_dump($userById);
-//echo '</pre>';
 //echo $userById->getId() . '<br>';
-//$userById->setUsername('Marek8_new');
+//echo '</pre>';
+//$userById->setUsername('Marek18_updated');
+//$userById->setEmail('marecki18<p>@marecki.pl');
 //$userById->saveToDb($database);
 //$res = User::loadAllUsers($database);
-//var_dump($userById->delete($database));
+//$userById->delete($database);
 //echo $userById->getId() . '<br>';
 //echo '<pre>';
 //print_r($res);

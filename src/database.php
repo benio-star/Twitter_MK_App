@@ -5,6 +5,7 @@ require_once dirname(__FILE__) . '/dbConfig.php';
 class Database {
 
     public $connection;
+    protected $stmt;
 
     // make the connection to DB start automatically with new object initiate
     function __construct() {
@@ -25,6 +26,11 @@ class Database {
 
     public function closeConnection() {
         if (isset($this->connection)) {
+            if(isset($this->stmt)) {
+                echo 'Likwidujemy stmt... ';
+                $this->stmt->close();
+                echo 'Zlikwidowane<br>';
+            }
             echo 'Zamykamy...';
             $this->connection->close();
             echo 'Zamknieto. Usuwamy...<br>';
@@ -54,14 +60,14 @@ class Database {
     }
 
     public function prepExecStatement($sql, $refs) {
-        $stmt = $this->prepStatInit();
-        if (!$stmt->prepare($sql)) {
-            echo $error = $stmt->error;
+        $this->stmt = $this->prepStatInit();
+        if (!$this->stmt->prepare($sql)) {
+            echo $error = $this->stmt->error;
         } else {
-            call_user_func_array(array($stmt, 'bind_param'), $refs);
-            $stmt->execute();
-            if ($stmt->error) {
-                echo $error = $stmt->error;
+            call_user_func_array(array($this->stmt, 'bind_param'), $refs);
+            $this->stmt->execute();
+            if ($this->stmt->error) {
+                echo $error = $this->stmt->error;
                 echo '<br>';
             }
             return TRUE;
