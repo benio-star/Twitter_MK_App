@@ -1,5 +1,4 @@
 <?php
-
 require_once dirname(__FILE__) . '/database.php';
 
 class User extends Database {
@@ -81,9 +80,9 @@ class User extends Database {
             print_r($params);
             echo '</pre>';
             /*
-             * prepExecStatement returned bool
+             * prepStatement returned bool
              */
-            $info = $database->prepExecStatement($sql, $params);
+            $info = $database->prepStatement($sql, $params);
             if ($info == TRUE) {
                 $this->id = $database->lastId();
                 return TRUE;
@@ -91,14 +90,14 @@ class User extends Database {
         } else {
             $sql = "UPDATE users SET username = ?, email = ?, hashed_password = ? ";
             $sql .= "WHERE id = ?";
-            echo '<br>--- '.$id.' ---<br>';
+            echo '<br>--- ' . $id . ' ---<br>';
             $params[] = 'sssi';
             $params[] = &$name;
             $params[] = &$email;
             $params[] = &$hashedPass;
             $params[] = &$id;
 
-            $info = $database->prepExecStatement($sql, $params);
+            $info = $database->prepStatement($sql, $params);
             if ($info == TRUE) {
                 echo 'Ile zmienionych wpisow: ' . $database->getRowsAffected() . '<br>';
                 return TRUE;
@@ -112,25 +111,22 @@ class User extends Database {
         $params[] = 'i';
         $params[] = &$id;
 
-        $info = $database->prepExecStatement($sql, $params);
-        if ($info == TRUE) {
-            $variables[] = &$idNr;
-            $variables[] = &$email;
-            $variables[] = &$username;
-            $variables[] = &$pass;
+        $variables[] = &$idNr;
+        $variables[] = &$email;
+        $variables[] = &$username;
+        $variables[] = &$pass;
 
-            $result = $database->bindOutputStatement($variables);
-            if ($result == TRUE) {
-                $loadedUser = new User();
-                $loadedUser->id = $idNr;
-                $loadedUser->email = $email;
-                $loadedUser->username = $username;
-                $loadedUser->hashedPassword = $pass;
+        $result = $database->prepStatement($sql, $params, $variables);
+        if ($result == TRUE) {
+            $loadedUser = new User();
+            $loadedUser->id = $idNr;
+            $loadedUser->email = $email;
+            $loadedUser->username = $username;
+            $loadedUser->hashedPassword = $pass;
 
-                return $loadedUser;
-            }
-            return NULL;
+            return $loadedUser;
         }
+        return NULL;
     }
 
     static public function loadAllUsers(Database $database) {
@@ -159,7 +155,7 @@ class User extends Database {
             $params[] = 'i';
             $params[] = &$this->id;
 
-            $info = $database->prepExecStatement($sql, $params);
+            $info = $database->prepStatement($sql, $params);
             if ($info == TRUE) {
                 $this->id = -1;
                 return TRUE;
@@ -176,22 +172,28 @@ $email = 'marecki29@mareck<p>i.pl';
 $pass = 'marek@16349';
 $id = 49;
 $user = new User();
-$user->setUsername($username);
+$user->setUsername('Marek30<html>');
 $user->setEmail($email);
 $user->setHashedPassword($pass);
+//echo $user->getUsername();
+//$user->setUsername('Marek31<p>');
+//echo $user->getUsername();
 //$user->saveToDb($database);
-//$userById = User::loadUserById($database, $id);
-//echo '<pre>';
-//var_dump($userById);
-//echo $userById->getId() . '<br>';
-//echo '</pre>';
+$userById = User::loadUserById($database, $id);
+echo '<pre>';
+var_dump($userById);
+echo '<br>' . $userById->getId() . '<br>';
+echo '<br>' . $userById->getEmail() . '<br>';
+echo '<br>' . $userById->getUsername() . '<br>';
+echo '<br>' . $userById->getHashedPassword() . '<br>';
+echo '</pre>';
 //$userById->setUsername('Marek18_updated');
 //$userById->setEmail('marecki18<p>@marecki.pl');
 //$userById->saveToDb($database);
-//$res = User::loadAllUsers($database);
+$res = User::loadAllUsers($database);
 //$userById->delete($database);
 //echo $userById->getId() . '<br>';
-//echo '<pre>';
-//print_r($res);
-//echo '</pre>';
+echo '<pre>';
+print_r($res);
+echo '</pre>';
 $database->closeConnection();

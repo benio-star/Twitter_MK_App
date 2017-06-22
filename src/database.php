@@ -1,5 +1,4 @@
 <?php
-
 require_once dirname(__FILE__) . '/dbConfig.php';
 
 class Database {
@@ -26,7 +25,7 @@ class Database {
 
     public function closeConnection() {
         if (isset($this->connection)) {
-            if(isset($this->stmt)) {
+            if (isset($this->stmt)) {
                 echo 'Likwidujemy stmt... ';
                 $this->stmt->close();
                 echo 'Zlikwidowane<br>';
@@ -59,19 +58,23 @@ class Database {
         return $this->connection->stmt_init();
     }
 
-    public function prepExecStatement($sql, $refs) {
+    public function prepStatement($sql, $params, $bindParams = FALSE) {
         $this->stmt = $this->prepStatInit();
         if (!$this->stmt->prepare($sql)) {
             echo $error = $this->stmt->error;
         } else {
-            call_user_func_array(array($this->stmt, 'bind_param'), $refs);
+            call_user_func_array(array($this->stmt, 'bind_param'), $params);
             $this->stmt->execute();
             if ($this->stmt->error) {
                 echo $error = $this->stmt->error;
                 echo '<br>';
             }
+            if ($bindParams) {
+                $this->bindOutputStatement($bindParams);
+            }
             return TRUE;
         }
+        return FALSE;
     }
 
     public function lastId() {
