@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.5.2
+-- version 4.6.6deb1+deb.cihar.com~xenial.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jun 13, 2017 at 02:19 AM
--- Server version: 10.1.21-MariaDB
--- PHP Version: 7.1.2
+-- Host: localhost
+-- Generation Time: Jun 23, 2017 at 06:45 PM
+-- Server version: 5.7.18-0ubuntu0.16.04.1
+-- PHP Version: 7.0.18-0ubuntu0.16.04.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -23,10 +23,22 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tweets`
+--
+
+CREATE TABLE `tweets` (
+  `tweet_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `tweet` varchar(140) DEFAULT NULL,
+  `creation_date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `email` varchar(255) NOT NULL,
@@ -57,13 +69,25 @@ INSERT INTO `users` (`id`, `email`, `username`, `hashed_password`) VALUES
 (43, 'marecki15&lt;p&gt;@marecki.pl', '&amp;lt;html&amp;gt;Marek15', '$2y$11$8My/kiV2RlHI0S6oIVCzVuDz972myxZ.rIx3ibMs9G7jPbW35WV1G'),
 (44, 'marecki16&lt;p&gt;@marecki.pl', '&amp;lt;html&amp;gt;Marek16', '$2y$11$Rpi2J/1YcMV9lXFonZD/SeVe.W8e.m1.aqs7PLnDn0A8/qdPx027O'),
 (45, 'marecki17&lt;p&gt;@marecki.pl', '', '$2y$11$kebBtq2xZ531UzGWvzh3nurM2dWMtAINqCmqQJfKBWBaNgl9ab4iW'),
-(48, '', '&amp;lt;html&amp;gt;Marek17', '$2y$11$nw9cJ6Zgtjq2wTQl6TJ3tOLmeEaZuIBgE/Zc5NDu2TAXKHPCXleOe'),
-(49, 'marecki17&amp;lt;p&amp;gt;@marecki.pl', '&amp;lt;html&amp;gt;Marek17', '$2y$11$J8k2Z.79dWPVoA48RcxKY.KMFHflYAf583Ob6j8sAEXkfB4qUam7e'),
-(51, 'marecki17@marecki.pl', 'Marek_new_17', '$2y$11$QHJsgRYSGIUX/nKEfU/WBeRtkx3hPD7HQaT9vuPktrJNPpN0RGRFa');
+(48, 'marecki18&amp;lt;p&amp;gt;@marecki.pl', 'Marek18_updated', '$2y$11$nw9cJ6Zgtjq2wTQl6TJ3tOLmeEaZuIBgE/Zc5NDu2TAXKHPCXleOe'),
+(51, 'marecki17@marecki.pl', 'Marek_new_17', '$2y$11$QHJsgRYSGIUX/nKEfU/WBeRtkx3hPD7HQaT9vuPktrJNPpN0RGRFa'),
+(59, 'marecki25@marecki.pl', 'Marek25', '$2y$11$ruK2BP8ETVHsySUy24OKB.Q7xzt/pmFjJI2dF38994jAiyGgj6/CO'),
+(60, 'marecki24@marecki.pl', 'Marek24', '$2y$11$mdoavxT97Lm2vQjzm2ofz.5wEfO9Z./zfMxP4kqRt.tleJXMyvlLG'),
+(62, 'marecki26@marecki.pl', 'Marek26', '$2y$11$HPl5fl6t4L2i8uTrogd3DuXLA7iKdd4gFoGbk1jNC6CN1OlHXNlOi'),
+(63, 'marecki26@mar&amp;lt;p&amp;gt;ecki.pl', 'Marek27&lt;html&gt;', '$2y$11$Yk4buysQBL/qHibVEwAh5O7n1Ao4wDvm12ZzmuPlnzUwqRy5UVfIC'),
+(64, 'marecki28@mar&amp;lt;p&amp;gt;ecki.pl', 'Marek28<html>', '$2y$11$TD.iSVViJtzAXwvyecCZyed2TaZMdB498H1atsG8EeZgOYZdDLp5O'),
+(66, 'marecki29@mareck&amp;lt;p&amp;gt;i.pl', 'Marek29&amp;lt;html&amp;gt;', '$2y$11$W/.PaxKj7YI5zQBntM6rc.fUZwnxfogtVMIkwTsqTyVlT1JgamOu6');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `tweets`
+--
+ALTER TABLE `tweets`
+  ADD PRIMARY KEY (`tweet_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `users`
@@ -77,10 +101,25 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `tweets`
+--
+ALTER TABLE `tweets`
+  MODIFY `tweet_id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `tweets`
+--
+ALTER TABLE `tweets`
+  ADD CONSTRAINT `tweets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
