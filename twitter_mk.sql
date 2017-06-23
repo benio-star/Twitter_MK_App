@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 23, 2017 at 06:46 PM
+-- Generation Time: Jun 23, 2017 at 07:02 PM
 -- Server version: 5.7.18-0ubuntu0.16.04.1
 -- PHP Version: 7.0.18-0ubuntu0.16.04.1
 
@@ -26,11 +26,13 @@ SET time_zone = "+00:00";
 -- Table structure for table `tweets`
 --
 
-CREATE TABLE `tweets` (
-  `tweet_id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `tweets` (
+  `tweet_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `tweet` varchar(140) DEFAULT NULL,
-  `creation_date` date NOT NULL
+  `creation_date` date NOT NULL,
+  PRIMARY KEY (`tweet_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -39,12 +41,14 @@ CREATE TABLE `tweets` (
 -- Table structure for table `users`
 --
 
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
-  `hashed_password` varchar(60) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `hashed_password` varchar(60) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
@@ -78,38 +82,6 @@ INSERT INTO `users` (`id`, `email`, `username`, `hashed_password`) VALUES
 (64, 'marecki28@mar&amp;lt;p&amp;gt;ecki.pl', 'Marek28<html>', '$2y$11$TD.iSVViJtzAXwvyecCZyed2TaZMdB498H1atsG8EeZgOYZdDLp5O'),
 (66, 'marecki29@mareck&amp;lt;p&amp;gt;i.pl', 'Marek29&amp;lt;html&amp;gt;', '$2y$11$W/.PaxKj7YI5zQBntM6rc.fUZwnxfogtVMIkwTsqTyVlT1JgamOu6');
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `tweets`
---
-ALTER TABLE `tweets`
-  ADD PRIMARY KEY (`tweet_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `tweets`
---
-ALTER TABLE `tweets`
-  MODIFY `tweet_id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 --
 -- Constraints for dumped tables
 --
