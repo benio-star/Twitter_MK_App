@@ -15,13 +15,6 @@ class User extends Database {
         $this->hashedPassword = '';
     }
 
-    public function clearInput($param) {
-        $param = trim($param);
-        $param = stripcslashes($param);
-        $param = htmlspecialchars($param);
-        return $param;
-    }
-
     public function getId() {
         return $this->id;
     }
@@ -39,25 +32,26 @@ class User extends Database {
     }
 
     public function setUsername($username) {
-        $this->username = $this->clearInput($username);
-        return $this;
+        $this->username = parent::clearInput($username);
+//        return $this;
     }
 
     public function setEmail($email) {
-        $this->email = $this->clearInput($email);
+        $this->email = parent::clearInput($email);
     }
 
     public function setHashedPassword($pass) {
         $options = ['cost' => 11];
-        $hashedPassword = password_hash($this->clearInput($pass), PASSWORD_BCRYPT, $options);
+        $hashedPassword = password_hash(parent::clearInput($pass), PASSWORD_BCRYPT, $options);
         $this->hashedPassword = $hashedPassword;
     }
 
     public function saveToDb(Database $database) {
         // Setting up variables
         $this->setUsername($this->username);
-        $name = $this->getUsername();
         $this->setEmail($this->email);
+
+        $name = $this->getUsername();
         $email = $this->getEmail();
         $hashedPass = $this->getHashedPassword();
         $id = $this->getId();
@@ -167,32 +161,56 @@ class User extends Database {
 
 }
 
-$username = "Marek29<html>";
-$email = 'marecki29@mareck<p>i.pl';
-$pass = 'marek@16349';
-$id = 49;
+$username = "Marek40<html>";
+$email = 'marecki40@marecki_p.pl';
+$pass = 'marek@19lk';
+$id = 63;
 $user = new User();
-$user->setUsername('Marek30<html>');
-$user->setEmail($email);
-$user->setHashedPassword($pass);
-//echo $user->getUsername();
+//$user->setUsername($username);
+//$user->setEmail($email);
+//$user->setHashedPassword($pass);
+//echo $user->getUsername() . '<br>';
 //$user->setUsername('Marek31<p>');
 //echo $user->getUsername();
 //$user->saveToDb($database);
+/*
+ * Wczytanie usera o danym ID
+ */
 $userById = User::loadUserById($database, $id);
-echo '<pre>';
-var_dump($userById);
-echo '<br>' . $userById->getId() . '<br>';
-echo '<br>' . $userById->getEmail() . '<br>';
-echo '<br>' . $userById->getUsername() . '<br>';
-echo '<br>' . $userById->getHashedPassword() . '<br>';
-echo '</pre>';
-//$userById->setUsername('Marek18_updated');
-//$userById->setEmail('marecki18<p>@marecki.pl');
+//echo '<pre>';
+//var_dump($userById);
+//echo '<br>' . $userById->getId() . '<br>';
+//echo '<br>' . $userById->getEmail() . '<br>';
+//echo '<br>' . $userById->getUsername() . '<br>';
+//echo '<br>' . $userById->getHashedPassword() . '<br>';
+//echo '</pre>';
+/*
+ * Zmiana danych wcześneij wybranego usera
+ */
+//$userById->setUsername('Marek30<html>');
+//$userById->setEmail('marecki30@marecki_p.pl');
+//$userById->setHashedPassword('marek@193lk');
 //$userById->saveToDb($database);
+//echo '<pre>';
+//var_dump($userById);
+//echo '<br>' . $userById->getId() . '<br>';
+//echo '<br>' . $userById->getEmail() . '<br>';
+//echo '<br>' . $userById->getUsername() . '<br>';
+//echo '<br>' . $userById->getHashedPassword() . '<br>';
+//echo '</pre>';
+/*
+ * Wczytanie wszystkich użytkowników
+ */
+//$res = User::loadAllUsers($database);
+//echo '<pre>';
+//print_r($res);
+//echo '</pre>';
+/*
+ * Skasowanie użytkownika o danym ID
+ */
+$userById->delete($database);
+echo $userById->getId() . '<br>';
 $res = User::loadAllUsers($database);
-//$userById->delete($database);
-//echo $userById->getId() . '<br>';
 echo '<pre>';
 print_r($res);
 echo '</pre>';

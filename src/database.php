@@ -23,6 +23,13 @@ class Database {
         }
     }
 
+    public function clearInput($param) {
+        $param = trim($param);
+        $param = stripcslashes($param);
+        $param = htmlspecialchars($param);
+        return $param;
+    }
+
     public function closeConnection() {
         if (isset($this->connection)) {
             if (isset($this->stmt)) {
